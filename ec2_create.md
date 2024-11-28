@@ -63,3 +63,95 @@ resource "aws_instance" "my_ec2" {
 terraform init (downloads necessary provider plugins and initializes your working directory)
 terraform plan (shows you what changes Terraform will make)
 terraform apply (creates the EC2 instance as per your configuration)
+___________________________________________________________________________________________________________________________________________________
+
+4.Create two ec2 in two regions in terraform
+
+
+# Provider Configuration for Region 1 (e.g., us-east-1)
+provider "aws" {
+  alias  = "us_east_1"
+  region = "us-east-1"
+}
+
+# Provider Configuration for Region 2 (e.g., us-west-2)
+provider "aws" {
+  alias  = "us_west_2"
+  region = "us-west-2"
+}
+
+# EC2 Instance in us-east-1
+resource "aws_instance" "us_east_instance" {
+  provider = aws.us_east_1
+
+  ami           = "ami-0c55b159cbfafe1f0"  # Update with a valid AMI ID for us-east-1 region
+  instance_type = "t2.micro"
+  tags = {
+    Name = "us-east-1-instance"
+  }
+}
+
+# EC2 Instance in us-west-2
+resource "aws_instance" "us_west_instance" {
+  provider = aws.us_west_2
+
+  ami           = "ami-0c55b159cbfafe1f0"  # Update with a valid AMI ID for us-west-2 region
+  instance_type = "t2.micro"
+  tags = {
+    Name = "us-west-2-instance"
+  }
+}
+________________________________________________________________________________________________________________________________
+To create two EC2 instances with two different users using Terraform
+
+1.~/.aws/credentials
+[default]
+aws_access_key_id = YOUR_DEFAULT_USER_ACCESS_KEY
+aws_secret_access_key = YOUR_DEFAULT_USER_SECRET_KEY
+
+[user1]
+aws_access_key_id = YOUR_USER1_ACCESS_KEY
+aws_secret_access_key = YOUR_USER1_SECRET_KEY
+
+[user2]
+aws_access_key_id = YOUR_USER2_ACCESS_KEY
+aws_secret_access_key = YOUR_USER2_SECRET_KEY
+
+
+2.Terraform Configuration Using Profiles
+# Provider Configuration for User 1 using the 'user1' profile
+provider "aws" {
+  alias   = "user1"
+  region  = "us-east-1"
+  profile = "user1"
+}
+
+# Provider Configuration for User 2 using the 'user2' profile
+provider "aws" {
+  alias   = "user2"
+  region  = "us-west-2"
+  profile = "user2"
+}
+
+# EC2 Instance created by User 1 (us-east-1)
+resource "aws_instance" "user1_instance" {
+  provider = aws.user1
+
+  ami           = "ami-0c55b159cbfafe1f0"  # Update with a valid AMI ID for us-east-1 region
+  instance_type = "t2.micro"
+  tags = {
+    Name = "user1-instance"
+  }
+}
+
+# EC2 Instance created by User 2 (us-west-2)
+resource "aws_instance" "user2_instance" {
+  provider = aws.user2
+
+  ami           = "ami-0c55b159cbfafe1f0"  # Update with a valid AMI ID for us-west-2 region
+  instance_type = "t2.micro"
+  tags = {
+    Name = "user2-instance"
+  }
+}
+
