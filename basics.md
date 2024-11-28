@@ -54,3 +54,33 @@ terraform.tfvars
 prod.tfvars
 dev.tfvars
 terraform apply --varfile prod.tfvars --auto-approve
+----------------------------------------------------------------------------------------------------------------------------------
+# Define the environment variable
+variable "environment" {
+  description = "Environment: prod or dev"
+  type        = string
+  default     = "dev"
+}
+
+# Define VPC CIDR blocks for different environments
+variable "vpc_cidrs" {
+  description = "VPC CIDR blocks based on the environment"
+  type        = map(string)
+  default = {
+    prod = "10.0.0.0/16"
+    dev  = "10.1.0.0/16"
+  }
+}
+
+# VPC Resource
+resource "aws_vpc" "main" {
+  cidr_block           = var.vpc_cidrs[var.environment]
+  enable_dns_support   = true
+  enable_dns_hostnames = true
+  tags = {
+    Name = "${var.environment}-vpc"
+  }
+}
+
+1.Change the environment in your prod.tfvars/dev.tfvars -> environment = "prod"
+2.terraform apply -var="environment=prod"
