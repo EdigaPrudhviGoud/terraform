@@ -1,4 +1,4 @@
-Variables:
+  Variables:
 # Defining an input variable for AWS region
 variable "aws_region" {
   description = "The AWS region to create resources in"
