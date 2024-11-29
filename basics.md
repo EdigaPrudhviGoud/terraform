@@ -1,3 +1,19 @@
+├── main.tf              # Primary configuration file
+├── variables.tf         # Input variable definitions
+├── outputs.tf           # Output values
+├── terraform.tfvars     # Variable values (optional but recommended)
+├── providers.tf         # Provider configuration
+├── versions.tf          # Terraform and provider version constraints
+├── modules/             # Reusable modules
+│   ├── module_name/     # Module subdirectory
+│   │   ├── main.tf
+│   │   ├── variables.tf
+│   │   ├── outputs.tf
+├── .terraform/          # Terraform's internal working directory (auto-created)
+└── terraform.tfstate    # Terraform's state file (auto-generated)
+
+
+
   Variables:
 # Defining an input variable for AWS region
 variable "aws_region" {
